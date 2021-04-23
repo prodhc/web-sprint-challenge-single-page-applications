@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as yup from 'yup';
-import { Route, Switch, Link } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './Header.js';
 import Home from './Home.js';
 import PizzaForm from './PizzaForm.js';
 import ConfirmedPage from './ConfirmedPage.js';
+import img from './Assets/Pizza.jpg';
 
-const initialData = { name: '' };
-const dummyData = [{ name: 'Michael' }];
+const initialFormValues = {
+	size: '',
+	sauce: '',
+	specialInstructions: '',
+	name: ''
+};
+
+// const dummyData = [{ name: 'Michael' }];
+
+// const schema = yup.object().shape({
+// 	name: yup.string().required('Please enter your name').min(3, 'Name needs to be 3 characters minimum')
+// 	// last_name: yup.string().required('Please enter your last name').min(2, 'Name needs to be 2 characters minimum'),
+// 	// email: yup.string().email('Please enter a valid email'),
+// 	// password: yup.string().required('Please choose a valid password').min(8, 'Password must be 8 characters minimum'),
+// 	// tos: yup.boolean().oneOf([true], 'You must agree to the Terms of Service to continue')
+// }); // creates the testing criteria and error messages for the form entry fields
 
 const Appdiv = styled.div`
 	nav {
@@ -36,20 +51,66 @@ const Appdiv = styled.div`
 	#pizza-form {
 		display: flex;
 		flex-direction: column;
+		border: 2px solid black;
+		width: 70%;
+		margin: 0 auto 5%;
+	}
+	.main-image {
+		background-image: url(${img});
+		background-position: center;
+		display: flex;
+		flex-direction: column;
+		height: 50vh;
+		justify-content: center;
+		align-items: center;
 	}
 `;
 
 const App = () => {
-	const [list, setList] = useState(dummyData);
-	const [formData, setFormData] = useState(initialData);
+	// const [list, setList] = useState(dummyData);
+	const [formValues, setFormValues] = useState(initialFormValues);
+	const [disabled, setDisabled] = useState(true); // determines if the submit button is useable
+	// const [errors, setErrors] = useState({
+	// 	name: ''
+	// 	// last_name: '',
+	// 	// email: '',
+	// 	// password: '',
+	// 	// tos: false
+	// }); // 
 
-	const change = () => {
-		console.log('hi');
+	// const setFormErrors = (name, value) => {
+	// 	yup.reach(schema, name)
+	// 		.validate(value)
+	// 		.then(() => {
+	// 			setErrors({ ...errors, [name]: '' }); 
+	// 		})
+	// 		.catch(err => {
+	// 			setErrors({ ...errors, [name]: err.errors[0] }); 
+	// 		});
+	// };
+	const changeHandler = e => {
+		e.preventDefault();
+		const { name, type, value, checked } = e.target;
+		const updatedInfo = type === 'checkbox' ? checked : value;
+		// setFormErrors(name, updatedInfo);
+		setFormValues({ ...formValues, [name]: updatedInfo });
 	};
+
 	const submit = e => {
 		e.preventDefault();
-		console.log('hi');
+		// const newUser = {
+		// 	name: formValues.first_name.trim()
+		// 	// email: formValues.email.trim(),
+		// 	// password: formValues.password.trim(),
+		// 	// tos: formValues.first_name
+		// };
+		setFormValues(initialFormValues); 
 	};
+
+	
+	// useEffect(() => {
+	// 	schema.isValid(formValues).then(valid => setDisabled(!valid));
+	// }, [formValues]);
 
 	return (
 		<Appdiv>
@@ -59,7 +120,13 @@ const App = () => {
 					<ConfirmedPage />
 				</Route>
 				<Route path="/pizza">
-					<PizzaForm submit={submit} formData={formData} change={change} />
+					<PizzaForm
+						values={formValues}
+						submit={submit}
+						changeHandler={changeHandler}
+						disabled={disabled}
+						// errors={errors}
+					/>
 				</Route>
 				<Route exact path="/">
 					<Home />

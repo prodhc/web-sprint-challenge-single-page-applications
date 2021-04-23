@@ -24,6 +24,7 @@ export default function ConfirmedPage(props) {
 			<div className="doggycard">
 				<h3>Enjoy this dog with Pizza!</h3>
 				<img src="https://media1.giphy.com/media/9fuvOqZ8tbZOU/giphy-downsized-large.gif" alt="dog and pizza" />
+	
 			</div>
 		</LastPage>
 	);
